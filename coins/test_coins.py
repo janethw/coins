@@ -1,6 +1,7 @@
 import unittest
 
-from coins import check_value_is_int, check_value_is_positive_or_zero, check_value_is_in_range
+from coins import (check_value_is_int, check_value_is_positive_or_zero, check_value_is_in_range, remove_duplicates,
+                   check_coins_is_list)
 
 
 class TestTargetValue(unittest.TestCase):
@@ -50,7 +51,23 @@ class TestTargetValue(unittest.TestCase):
 
 
 class TestDenominationClass(unittest.TestCase):
-    pass
+
+    def test_check_coins_is_list(self):
+        # Positive test case of instance
+        self.assertIsInstance(check_coins_is_list([2, 5, 10]), list)
+        self.assertIsInstance(check_coins_is_list([0, 1, 2, 2, 5, 10, 100]), list)
+
+        # Negative test case of instance
+        with self.assertRaises(ValueError) as context:
+            check_coins_is_list({0, 1, 2, 25, 10, 10})
+        self.assertEqual(str(context.exception), "Coin denominations must be in a list")
+
+    def test_remove_duplicates(self):
+        # Positive test case of output
+        self.assertEqual(remove_duplicates([2, 5, 10]), [2, 5, 10])
+        self.assertEqual(remove_duplicates([0, 1, 2, 2, 2, 5, 10, 100]), [0, 1, 2, 5, 10, 100])
+        self.assertEqual(remove_duplicates([1, 1, 1, 2, 5, 10, 50, 100, 200, 200, 200, 2 * 10 ** 2]),
+                         [1, 2, 5, 10, 50, 100, 200])
 
 
 if __name__ == "__main__":

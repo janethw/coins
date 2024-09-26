@@ -10,13 +10,36 @@ def main():
         print(f"{value=}")
         check_value_is_valid(value)
     except ValueError as value_error:
+        print(-1)
         print(f"Value is not valid: {value_error}")
+
+    # Validate that coins is a list
+    try:
+        check_coins_is_list(coins)
+    except ValueError as value_error:
+        print(-1)
+        print(f"Coin array is not valid: {value_error}")
+
+    # Remove duplicates from coins array
+    try:
+        coins = remove_duplicates(coins)
+    except ValueError as value_error:
+        print(-1)
+        print(f"The coins array is not valid: {value_error}")
 
     # Validate coins array
     try:
         check_coins_array_is_valid(coins)
     except ValueError as value_error:
+        print(-1)
         print(f"The coins array is not valid: {value_error}")
+
+
+def check_value_is_valid(input_value):
+    check_value_is_in_range(input_value)
+    check_value_is_int(input_value)
+    check_value_is_positive_or_zero(input_value)
+    return input_value
 
 
 # Check target value is in range
@@ -44,38 +67,43 @@ def check_value_is_positive_or_zero(input_value):
     return input_value
 
 
-def check_value_is_valid(input_value):
-    check_value_is_in_range(input_value)
-    check_value_is_int(input_value)
-    check_value_is_positive_or_zero(input_value)
-    return input_value
-
-
 def check_coins_array_is_valid(coins):
-    check_for_duplicates()
-    check_array_length()
-    check_large_denominations()
-    check_positive_integers()
+    for coin in coins:
+        check_positive_integers(coin)
+        check_array_length(coin)
+        check_large_denominations(coin)
     return coins
 
 
-# Validation of coins[] - check denominations are positive integers
-def check_positive_integers():
-    pass
+# Validation of coins[] - check type is list
+def check_coins_is_list(coins):
+    if not isinstance(coins, list):
+        print(-1)
+        raise ValueError("Coin denominations must be in a list")
+    return coins
 
 
 # Validation of coins[] - removal of duplicates
-def check_for_duplicates():
+def remove_duplicates(coin_array):
+    unique_coin_array = []
+    for coin in coin_array:
+        if coin not in unique_coin_array:
+            unique_coin_array.append(coin)
+    return unique_coin_array
+
+
+# Validation of coins[] - check denominations are positive integers
+def check_positive_integers(coin):
     pass
 
 
 # Validation of coins[] - check of array length
-def check_array_length():
+def check_array_length(coin):
     pass
 
 
 # Validation of coins[] - check of denomination amounts
-def check_large_denominations():
+def check_large_denominations(coin):
     pass
 
 
