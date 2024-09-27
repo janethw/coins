@@ -4,7 +4,7 @@ from coins import (check_value_is_int, check_value_is_positive, check_value_is_i
                    check_coins_is_list)
 
 
-class TestTargetValue(unittest.TestCase):
+class TestTargetCoinsArray(unittest.TestCase):
 
     def test_check_value_is_in_range(self, variable_name="V"):
         # Positive test case for valueV
@@ -37,7 +37,7 @@ class TestTargetValue(unittest.TestCase):
             self.assertEqual(str(context.exception),
                              f"Currency amounts for {variable_name} must be expressed in terms of unit currency, "
                              f"eg multiples of whole pence for Pound Sterling")
-        # Examples of early test fails
+        # Examples of early test fails due to precision errors following use of floats
         # self.assertIsInstance(check_value_is_int(4.23 * 100), int)  # AssertionError:
         # 423.00000000000006 is not an instance of <class 'int'>
         # self.assertIsInstance(check_value_is_int(4.23 * 100 % 100), int)  # AssertionError:
@@ -49,22 +49,28 @@ class TestTargetValue(unittest.TestCase):
         self.assertEqual(check_value_is_positive(1, variable_name), 1)
 
         # # Negative test case
-        with self.assertRaises(ValueError) as context:
-            check_value_is_positive(-4, variable_name)
-        self.assertEqual(str(context.exception), f"Currency amounts for {variable_name} must be positive")
+        negative_test_cases_for_positive_int = [-3, 0, -10**10, -7**3]
+        for test_value in negative_test_cases_for_positive_int:
+            print(f"Current test: {test_value=}")
+            with self.assertRaises(ValueError) as context:
+                check_value_is_positive(-4, variable_name)
+            self.assertEqual(str(context.exception), f"Currency amounts for {variable_name} must be positive")
 
 
 class TestDenominationClass(unittest.TestCase):
 
     def test_check_coins_is_list(self):
-        # Positive test case of instance
+        # Positive test case of instance of list
         self.assertIsInstance(check_coins_is_list([2, 5, 10]), list)
         self.assertIsInstance(check_coins_is_list([0, 1, 2, 2, 5, 10, 100]), list)
 
-        # Negative test case of instance
-        with self.assertRaises(ValueError) as context:
-            check_coins_is_list({0, 1, 2, 25, 10, 10})
-        self.assertEqual(str(context.exception), "Coin denominations must be in a list")
+        # Negative test case of instance of list
+        negative_test_cases_for_int = [{1, 2, 10, 50}, (1, 2, 10, 50), "1, 2, 10, 50", 40]
+        for test_value in negative_test_cases_for_int:
+            print(f"Current test: {test_value=}")
+            with self.assertRaises(ValueError) as context:
+                check_coins_is_list(test_value)
+            self.assertEqual(str(context.exception), "Coin denominations must be in a list")
 
     def test_remove_duplicates(self):
         # Positive test case of output
