@@ -48,12 +48,12 @@ class TestTargetCoinsArray(unittest.TestCase):
         self.assertEqual(check_value_is_positive(5, variable_name), 5)
         self.assertEqual(check_value_is_positive(1, variable_name), 1)
 
-        # # Negative test case
+        # Negative test case
         negative_test_cases_for_positive_int = [-3, 0, -10**10, -7**3]
         for test_value in negative_test_cases_for_positive_int:
             print(f"Current test: {test_value=}")
             with self.assertRaises(ValueError) as context:
-                check_value_is_positive(-4, variable_name)
+                check_value_is_positive(test_value, variable_name)
             self.assertEqual(str(context.exception), f"Currency amounts for {variable_name} must be positive")
 
 
@@ -80,11 +80,32 @@ class TestDenominationClass(unittest.TestCase):
                          [1, 2, 5, 10, 50, 100, 200])
 
     def test_input_value_is_positive(self, variable_name="coins array"):
-        # Positive test case for coins array
-        self.assertEqual(check_value_is_positive(5, variable_name), 5)
-        self.assertEqual(check_value_is_positive(1, variable_name), 1)
+        # Positive test case for coin in coins array
+        self.assertEqual(check_value_is_positive(1000, variable_name), 1000)
+        self.assertEqual(check_value_is_positive(2, variable_name), 2)
+
+        # Negative test case for coin in coins array
+        negative_test_cases_for_positive_int = [-3, 0, -10 ** 10, -7 ** 3]
+        for test_value in negative_test_cases_for_positive_int:
+            print(f"Current test: {test_value=}")
+            with self.assertRaises(ValueError) as context:
+                check_value_is_positive(test_value, variable_name)
+            self.assertEqual(str(context.exception), f"Currency amounts for {variable_name} must be positive")
+
+    def test_check_value_is_in_range(self, variable_name="coins array"):
+        # Positive test case for coin in coins array
+        self.assertLessEqual(check_value_is_in_range(10 ** 14, variable_name), 10 ** 14)
+        self.assertLessEqual(check_value_is_in_range(12 ** 6, variable_name), 12 ** 6)
+        self.assertLessEqual(check_value_is_in_range(19, variable_name), 19)
 
         # Negative test case
+        negative_test_cases_for_range = [-5, 10 ** 16, -10 ** 16, -4 ** 11]
+        for test_value in negative_test_cases_for_range:
+            print(f"Current test: {test_value=}")
+            with self.assertRaises(ValueError) as context:
+                check_value_is_in_range(test_value, variable_name)
+            self.assertEqual(str(context.exception),
+                             f"Currency amounts for {variable_name} must be between 0 and 10 to the power 15")
 
 
 if __name__ == "__main__":
