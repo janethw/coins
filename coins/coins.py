@@ -4,6 +4,7 @@ from denominations import Denomination
 def main():
     valueV = 10 ** 2
     coins = [1, 2, 5, 10, 20, 50, 100, 200]
+    max_denominations = 10 ** 3  # Used to set max length to coins array
 
     # Validate value (V)
     try:
@@ -26,6 +27,13 @@ def main():
     except ValueError as value_error:
         print(-1)
         print(f"The coins array is not valid: {value_error}")
+
+    # Check coins array length within limits
+    try:
+        check_array_length(coins, variable_name="coins array", max_array_length=max_denominations)
+    except ValueError as value_error:
+        print(-1)
+        print(f"Coin array is not valid: {value_error}")
 
     # Validate coins array
     try:
@@ -70,7 +78,6 @@ def check_value_is_positive(input_value, variable_name):
 def check_coins_array_is_valid(coins, variable_name):
     for coin in coins:
         check_value_is_int(coin, variable_name)
-        check_array_length(coin, variable_name)
         check_value_is_in_range(coin, variable_name)
     return coins
 
@@ -93,8 +100,10 @@ def remove_duplicates(coin_array):
 
 
 # Validation of coins[] - check of array length
-def check_array_length(coins, variable_name):
-    pass
+def check_array_length(coins, variable_name, max_array_length):
+    if len(coins) > max_array_length:
+        print(-1)
+        raise ValueError(f"{variable_name} can contain up to {max_array_length} denomination amounts")
 
 
 if __name__ == "__main__":

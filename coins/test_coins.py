@@ -1,7 +1,7 @@
 import unittest
 
 from coins import (check_value_is_int, check_value_is_positive, check_value_is_in_range, remove_duplicates,
-                   check_coins_is_list)
+                   check_coins_is_list, check_array_length)
 
 
 class TestTargetCoinsArray(unittest.TestCase):
@@ -106,6 +106,9 @@ class TestDenominationClass(unittest.TestCase):
                 check_value_is_in_range(test_value, variable_name)
             self.assertEqual(str(context.exception),
                              f"Currency amounts for {variable_name} must be between 0 and 10 to the power 15")
+
+    def test_check_array_length(self):
+        pass
 
 
 if __name__ == "__main__":
