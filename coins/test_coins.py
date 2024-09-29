@@ -107,8 +107,20 @@ class TestDenominationClass(unittest.TestCase):
             self.assertEqual(str(context.exception),
                              f"Currency amounts for {variable_name} must be between 0 and 10 to the power 15")
 
-    def test_check_array_length(self):
-        pass
+    def test_check_array_length(self, variable_name="coins array", max_array_length=10):
+        # Positive test case
+        self.assertEqual(check_array_length([1, 2, 5, 10, 20, 50], variable_name, max_array_length), [1, 2, 5, 10, 20, 50])
+        self.assertEqual(check_array_length([1, 2, 5, 10, 20, 50, 100, 1000], variable_name, max_array_length), [1, 2, 5, 10, 20, 50, 100, 1000])
+        self.assertLessEqual(check_array_length([], variable_name, max_array_length), [])
+
+        # Negative test case
+        negative_test_cases_for_len_coins_array = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                                                   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]]
+        for test_case in negative_test_cases_for_len_coins_array:
+            with self.assertRaises(ValueError) as context:
+                check_array_length(test_case, variable_name, max_array_length)
+            self.assertEqual(str(context.exception),
+                             f"{variable_name} can contain up to {max_array_length} denomination amounts")
 
 
 if __name__ == "__main__":
