@@ -124,7 +124,7 @@ class TestDenominationClass(unittest.TestCase):
                              f"{variable_name} can contain up to {max_array_length} denomination amounts")
 
     # patch() replaces the real objects in the code with Mock instances
-    @patch("builtins.input", side_effects=["1", "2", "5", "10"])
+    @patch("builtins.input", return_value=["1 2 5 10"])
     def test_get_currency_denomination_inputs(self, mock_input):
         # Positive test case
         result = get_currency_denomination_inputs()
