@@ -50,9 +50,13 @@ def get_currency_denomination_inputs():
     coins_array = []
     denominations = input("Enter denominations as integers separated by space: ")
     denominations = denominations.split(" ")
-    for denomination in denominations:
-        coins_array.append(int(denomination))
-    print(f"{coins_array=}")
+    try:
+        for denomination in denominations:
+            coins_array.append(int(denomination))
+        print(f"{coins_array=}")
+    except ValueError as value_error:
+        print(-1)
+        raise ValueError(f"Denominations were invalid - they need to be integers separated by spaces.")
     return coins_array
 
 

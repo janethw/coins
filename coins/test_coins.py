@@ -124,12 +124,20 @@ class TestDenominationClass(unittest.TestCase):
                              f"{variable_name} can contain up to {max_array_length} denomination amounts")
 
     # patch() replaces the real objects in the code with Mock instances
-    @patch("builtins.input", return_value=["1 2 5 10"])
+    # Positive test case
+    @patch("builtins.input", return_value="1 2 5 10")
     def test_get_currency_denomination_inputs(self, mock_input):
-        # Positive test case
         result = get_currency_denomination_inputs()
         expected_result = [1, 2, 5, 10]
-        self.assertEqual(result, expected_result, "Expected result was not returned")
+        self.assertEqual(result, expected_result)
+
+    # Negative test case
+    @patch("builtins.input", return_value="one two five ten")
+    def test_get_currency_denomination_inputs_invalid(self, mock_input):
+        with self.assertRaises(ValueError) as context:
+            get_currency_denomination_inputs()
+        self.assertEqual(str(context.exception),
+                         "Denominations were invalid - they need to be integers separated by spaces.")
 
 
 if __name__ == "__main__":
