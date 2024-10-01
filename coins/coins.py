@@ -6,6 +6,9 @@ def main():
     coins = [1, 2, 5, 10, 20, 50, 100, 200]
     max_array_length = 10 ** 3  # Used to set max length to coins array
 
+    # Get user inputs coins array
+    coins = get_currency_denomination_inputs()
+
     # Validate value (V)
     try:
         print(f"{valueV=}")
@@ -14,21 +17,21 @@ def main():
         print(-1)
         print(f"Value is not valid: {value_error}")
 
-    # Validate that coins is a list
+    # Validate that coins array is a list
     try:
         check_coins_is_list(coins)
     except ValueError as value_error:
         print(-1)
         print(f"Coin array is not valid: {value_error}")
 
-    # Remove duplicates from coins array
+    # Remove any duplicates from coins array
     try:
         coins = remove_duplicates(coins)
     except ValueError as value_error:
         print(-1)
         print(f"The coins array is not valid: {value_error}")
 
-    # Check coins array length within limits
+    # Check coins array length within array length limits
     try:
         check_array_length(coins, variable_name="coins array", max_array_length=max_array_length)
     except ValueError as value_error:
@@ -41,6 +44,20 @@ def main():
     except ValueError as value_error:
         print(-1)
         print(f"The coins array is not valid: {value_error}")
+
+
+def get_currency_denomination_inputs():
+    coins_array = []
+    denominations = input("Enter denominations as integers separated by space: ")
+    denominations = denominations.split(" ")
+    try:
+        for denomination in denominations:
+            coins_array.append(int(denomination))
+        print(f"{coins_array=}")
+    except ValueError as value_error:
+        print(-1)
+        raise ValueError(f"Denominations were invalid - they need to be integers separated by spaces.")
+    return coins_array
 
 
 def check_value_is_valid(input_value, variable_name):
