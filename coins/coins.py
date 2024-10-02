@@ -8,7 +8,7 @@ def main():
     coins = get_currency_denomination_inputs()
     valueV = get_target_value_input()
 
-    # Validate value (V)
+    # Validate valueV (V)
     try:
         print(f"{valueV=}")
         check_value_is_valid(valueV, variable_name="V")
@@ -16,7 +16,8 @@ def main():
         print(-1)
         print(f"Value is not valid: {value_error}")
 
-    # Validate that coins array is a list
+    # Validate coins array
+    # Check coins array is a list
     try:
         check_coins_is_list(coins)
     except ValueError as value_error:
@@ -37,12 +38,14 @@ def main():
         print(-1)
         print(f"Coin array is not valid: {value_error}")
 
-    # Validate coins array
+    # Additional validation of coins array
     try:
         check_coins_array_is_valid(coins, variable_name="coins array")
     except ValueError as value_error:
         print(-1)
         print(f"The coins array is not valid: {value_error}")
+
+    # Find minimum number of coins required to make the target value, V
 
 
 def get_currency_denomination_inputs():
