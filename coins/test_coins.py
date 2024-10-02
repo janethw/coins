@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from coins import (check_value_is_int, check_value_is_positive, check_value_is_in_range, remove_duplicates,
-                   check_coins_is_list, check_array_length, get_currency_denomination_inputs)
+                   check_coins_is_list, check_array_length, get_currency_denomination_inputs, get_target_value_input)
 
 
 class TestTargetCoinsArray(unittest.TestCase):
@@ -123,7 +123,7 @@ class TestDenominationClass(unittest.TestCase):
             self.assertEqual(str(context.exception),
                              f"{variable_name} can contain up to {max_array_length} denomination amounts")
 
-    # patch() replaces the real objects in the code with Mock instances
+    # Test of user inputs for coins array
     # Positive test case
     @patch("builtins.input", return_value="1 2 5 10")
     def test_get_currency_denomination_inputs(self, mock_input):
@@ -138,6 +138,21 @@ class TestDenominationClass(unittest.TestCase):
             get_currency_denomination_inputs()
         self.assertEqual(str(context.exception),
                          "Denominations were invalid - they need to be integers separated by spaces.")
+
+    # Test of user input for target value V
+    # Positive test case
+    @patch('builtins.input', return_value="135")
+    def test_get_target_value_input(self, mock_input):
+        result = get_target_value_input()
+        expected_result = 135
+        self.assertEqual(result, expected_result)
+
+    # Negative test case
+    @patch('builtins.input', return_value="13.54")
+    def test_get_target_value_input_invalid(self, mock_input):
+        with self.assertRaises(ValueError) as context:
+            get_target_value_input()
+        self.assertEqual(str(context.exception), "Value, V, is invalid - it needs to be an integer.")
 
 
 if __name__ == "__main__":
