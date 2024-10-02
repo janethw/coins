@@ -2,12 +2,11 @@ from denominations import Denomination
 
 
 def main():
-    valueV = 10 ** 2
-    coins = [1, 2, 5, 10, 20, 50, 100, 200]
     max_array_length = 10 ** 3  # Used to set max length to coins array
 
     # Get user inputs coins array
     coins = get_currency_denomination_inputs()
+    valueV = get_target_value_input()
 
     # Validate value (V)
     try:
@@ -54,10 +53,19 @@ def get_currency_denomination_inputs():
         for denomination in denominations:
             coins_array.append(int(denomination))
         print(f"{coins_array=}")
-    except ValueError as value_error:
+    except ValueError:
         print(-1)
-        raise ValueError(f"Denominations were invalid - they need to be integers separated by spaces.")
+        raise ValueError("Denominations were invalid - they need to be integers separated by spaces.")
     return coins_array
+
+
+def get_target_value_input():
+    try:
+        valueV = int(input("Enter the target value, V, as an integer: "))
+    except ValueError:
+        print(-1)
+        raise ValueError("Value, V, is invalid - it needs to be an integer.")
+    return valueV
 
 
 def check_value_is_valid(input_value, variable_name):
