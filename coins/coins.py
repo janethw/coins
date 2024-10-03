@@ -10,7 +10,6 @@ def main():
 
     # Validate valueV (V)
     try:
-        print(f"{valueV=}")
         check_value_is_valid(valueV, variable_name="V")
     except ValueError as value_error:
         print(-1)
@@ -49,7 +48,12 @@ def main():
     coins_dict = dict.fromkeys(coins, 0)
     # print(coins_dict)
     minimum_coins_dict = calculate_minimum_coins_for_target_value(valueV, coins, coins_dict)
-    print(f"After min_coins_dict fn call, {minimum_coins_dict=}")
+    # print(f"After min_coins_dict fn call, {minimum_coins_dict=}")
+    print(f"The minimum coins to achieve the target value {valueV} is: ")
+    for k, v in minimum_coins_dict.items():
+        if v != 0:
+            print(f"{v} x coin {k}")
+    print(f"The total number of coins required is {sum(minimum_coins_dict.values())}")
 
 
 def get_currency_denomination_inputs():
@@ -59,7 +63,7 @@ def get_currency_denomination_inputs():
     try:
         for denomination in denominations:
             coins_array.append(int(denomination))
-        print(f"{coins_array=}")
+        print(f"The currency denominations you have set are: {coins_array}")
     except ValueError:
         print(-1)
         raise ValueError("Denominations were invalid - they need to be integers separated by spaces.")
