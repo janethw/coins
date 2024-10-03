@@ -2,10 +2,11 @@ import unittest
 from unittest.mock import patch
 
 from coins import (check_value_is_int, check_value_is_positive, check_value_is_in_range, remove_duplicates,
-                   check_coins_is_list, check_array_length, get_currency_denomination_inputs, get_target_value_input)
+                   check_coins_is_list, check_array_length, get_currency_denomination_inputs, get_target_value_input,
+                   calculate_minimum_coins_for_target_value)
 
 
-class TestTargetCoinsArray(unittest.TestCase):
+class TestTargetValueClass(unittest.TestCase):
 
     def test_check_value_is_in_range(self, variable_name="V"):
         # Positive test case for valueV
@@ -50,15 +51,15 @@ class TestTargetCoinsArray(unittest.TestCase):
         self.assertEqual(check_value_is_positive(1, variable_name), 1)
 
         # Negative test case
-        negative_test_cases_for_positive_int = [-3, 0, -10**10, -7**3]
-        for test_value in negative_test_cases_for_positive_int:
+        negative_test_cases_for_positive = [-3, 0, -10**10, -7**3]
+        for test_value in negative_test_cases_for_positive:
             print(f"Current test: {test_value=}")
             with self.assertRaises(ValueError) as context:
                 check_value_is_positive(test_value, variable_name)
             self.assertEqual(str(context.exception), f"Currency amounts for {variable_name} must be positive")
 
 
-class TestDenominationClass(unittest.TestCase):
+class TestCoinsArrayClass(unittest.TestCase):
 
     def test_check_coins_is_list(self):
         # Positive test case of instance of list
@@ -66,8 +67,8 @@ class TestDenominationClass(unittest.TestCase):
         self.assertIsInstance(check_coins_is_list([0, 1, 2, 2, 5, 10, 100]), list)
 
         # Negative test case of instance of list
-        negative_test_cases_for_int = [{1, 2, 10, 50}, (1, 2, 10, 50), "1, 2, 10, 50", 40]
-        for test_value in negative_test_cases_for_int:
+        negative_test_cases_for_list = [{1, 2, 10, 50}, (1, 2, 10, 50), "1, 2, 10, 50", 40]
+        for test_value in negative_test_cases_for_list:
             print(f"Current test: {test_value=}")
             with self.assertRaises(ValueError) as context:
                 check_coins_is_list(test_value)
@@ -80,14 +81,14 @@ class TestDenominationClass(unittest.TestCase):
         self.assertEqual(remove_duplicates([1, 1, 1, 2, 5, 10, 50, 100, 200, 200, 200, 2 * 10 ** 2]),
                          [1, 2, 5, 10, 50, 100, 200])
 
-    def test_input_value_is_positive(self, variable_name="coins array"):
+    def test_coin_value_is_positive(self, variable_name="coins array"):
         # Positive test case for coin in coins array
         self.assertEqual(check_value_is_positive(1000, variable_name), 1000)
         self.assertEqual(check_value_is_positive(2, variable_name), 2)
 
         # Negative test case for coin in coins array
-        negative_test_cases_for_positive_int = [-3, 0, -10 ** 10, -7 ** 3]
-        for test_value in negative_test_cases_for_positive_int:
+        negative_test_cases_for_positive_coins = [-400, 0, -10 ** 10, -7 ** 3]
+        for test_value in negative_test_cases_for_positive_coins:
             print(f"Current test: {test_value=}")
             with self.assertRaises(ValueError) as context:
                 check_value_is_positive(test_value, variable_name)
@@ -123,7 +124,10 @@ class TestDenominationClass(unittest.TestCase):
             self.assertEqual(str(context.exception),
                              f"{variable_name} can contain up to {max_array_length} denomination amounts")
 
-    # Test of user inputs for coins array
+
+class TestUserInputsClass(unittest.TestCase):
+
+    # Test of user input for coins array, coins[]
     # Positive test case
     @patch("builtins.input", return_value="1 2 5 10")
     def test_get_currency_denomination_inputs(self, mock_input):
@@ -153,6 +157,14 @@ class TestDenominationClass(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             get_target_value_input()
         self.assertEqual(str(context.exception), "Value, V, is invalid - it needs to be an integer.")
+
+
+class TestMinimumCoinCalculationClass(unittest.TestCase):
+
+    # Positive test case
+    def test_calculate_minimum_coins_for_target_value(self):
+        self.assertEqual(calculate_minimum_coins_for_target_value(
+            63, [1, 2, 5, 10], coins_dict={1: 0, 2: 0, 5: 0, 10: 0}), {1: 1, 2: 1, 5: 0, 10: 6})
 
 
 if __name__ == "__main__":

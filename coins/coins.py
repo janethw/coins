@@ -45,7 +45,11 @@ def main():
         print(-1)
         print(f"The coins array is not valid: {value_error}")
 
-    # Find minimum number of coins required to make the target value, V
+    # Find minimum number of coins required to make the target value,
+    coins_dict = dict.fromkeys(coins, 0)
+    # print(coins_dict)
+    minimum_coins_dict = calculate_minimum_coins_for_target_value(valueV, coins, coins_dict)
+    print(f"After min_coins_dict fn call, {minimum_coins_dict=}")
 
 
 def get_currency_denomination_inputs():
@@ -69,6 +73,20 @@ def get_target_value_input():
         print(-1)
         raise ValueError("Value, V, is invalid - it needs to be an integer.")
     return valueV
+
+
+def calculate_minimum_coins_for_target_value(valueV, coins, coins_dict):
+    i = len(coins) - 1
+    while i >= 0:
+        # print(f"{coins=}")
+        whole_multiple, remainder = divmod(valueV, coins[i])
+        coins_dict[coins[i]] = whole_multiple
+        valueV = remainder
+        coins.pop()
+        # print(f"{coins_dict=}")
+        return calculate_minimum_coins_for_target_value(valueV, coins, coins_dict)
+    # print(f"After while loop, {coins_dict=}")
+    return coins_dict
 
 
 def check_value_is_valid(input_value, variable_name):
