@@ -1,6 +1,3 @@
-from denominations import Denomination
-
-
 def main():
     max_array_length = 10 ** 3  # Used to set max length to coins array
 
@@ -48,35 +45,44 @@ def main():
     coins_dict = dict.fromkeys(coins, 0)
     # print(coins_dict)
     minimum_coins_dict = calculate_minimum_coins_for_target_value(valueV, coins, coins_dict)
-    # print(f"After min_coins_dict fn call, {minimum_coins_dict=}")
-    print(f"The minimum coins to achieve the target value {valueV} is: ")
-    for k, v in minimum_coins_dict.items():
-        if v != 0:
-            print(f"{v} x coin {k}")
-    print(f"The total number of coins required is {sum(minimum_coins_dict.values())}")
+
+    # Check target value was achieved with the given currency denominations
+    if not check_target_value_was_achieved_with_given_currency(valueV, minimum_coins_dict):
+        print("-1\nThe target value cannot be achieved with the given currency denominations.")
+    else:
+        # print(f"After min_coins_dict fn call, {minimum_coins_dict=}")
+        print(f"\nThe minimum coins to achieve the target value {valueV} is: ")
+        for k, v in minimum_coins_dict.items():
+            if v != 0:
+                print(f"{v} x coin {k}")
+        print(f"The total number of coins required is {sum(minimum_coins_dict.values())}")
 
 
 def get_currency_denomination_inputs():
     coins_array = []
-    denominations = input("Enter denominations as integers separated by space: ")
-    denominations = denominations.split(" ")
-    try:
-        for denomination in denominations:
-            coins_array.append(int(denomination))
-        print(f"The currency denominations you have set are: {coins_array}")
-    except ValueError:
-        print(-1)
-        raise ValueError("Denominations were invalid - they need to be integers separated by spaces.")
-    return coins_array
+    while True:
+        denominations = input("Enter denominations as integers separated by space: ")
+        denominations = denominations.split(" ")
+        try:
+            for denomination in denominations:
+                coins_array.append(int(denomination))
+        except ValueError:
+            print("Denominations were invalid - they need to be integers separated by spaces.")
+            coins_array = []
+        else:
+            sorted_coins_array = sorted(coins_array)
+            print(f"The currency denominations you have set are: {sorted_coins_array}")
+            return sorted_coins_array
 
 
 def get_target_value_input():
-    try:
-        valueV = int(input("Enter the target value, V, as an integer: "))
-    except ValueError:
-        print(-1)
-        raise ValueError("Value, V, is invalid - it needs to be an integer.")
-    return valueV
+    while True:
+        try:
+            valueV = int(input("Enter the target value, V, as an integer: "))
+        except ValueError:
+            print("Value, V, is invalid - it needs to be an integer.")
+        else:
+            return valueV
 
 
 def calculate_minimum_coins_for_target_value(valueV, coins, coins_dict):
@@ -91,6 +97,18 @@ def calculate_minimum_coins_for_target_value(valueV, coins, coins_dict):
         return calculate_minimum_coins_for_target_value(valueV, coins, coins_dict)
     # print(f"After while loop, {coins_dict=}")
     return coins_dict
+
+
+def check_target_value_was_achieved_with_given_currency(valueV, minimum_coins_dict):
+    def multiply_func(a, b):
+        return a * b
+    try:
+        target_value = sum(map(multiply_func, minimum_coins_dict.values(), minimum_coins_dict.keys()))
+        if target_value == valueV:
+            return 1
+    except (ValueError, TypeError):
+        print("Invalid input into function.")
+    return 0
 
 
 def check_value_is_valid(input_value, variable_name):
