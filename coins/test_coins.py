@@ -130,25 +130,25 @@ class TestUserInputsClass(unittest.TestCase):
     # Test of user inputs for coins array, coins[]
     @patch("builtins.input", return_value="1 2 5 10", autospec=True)
     def test_get_currency_denomination_inputs_1(self, mock_input):
-        result = get_currency_denomination_inputs()
+        result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [1, 2, 5, 10]
         self.assertEqual(result, expected_result)
 
     @patch("builtins.input", return_value="10 5 2 1", autospec=True)
     def test_get_currency_denomination_inputs_2(self, mock_input):
-        result = get_currency_denomination_inputs()
+        result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [1, 2, 5, 10]
         self.assertEqual(result, expected_result)
 
     @patch("builtins.input", return_value="2 10 5 1", autospec=True)
     def test_get_currency_denominations_inputs_3(self, mock_input):
-        result = get_currency_denomination_inputs()
+        result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [1, 2, 5, 10]
         self.assertEqual(result, expected_result)
 
     @patch("builtins.input", return_value="4 3 2", autospec=True)
     def test_get_currency_denominations_inputs_4(self, mock_input):
-        result = get_currency_denomination_inputs()
+        result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [2, 3, 4]
         self.assertEqual(result, expected_result)
 
@@ -171,6 +171,12 @@ class TestUserInputsClass(unittest.TestCase):
         # result = get_currency_denomination_inputs()
         # expected_result = [1]
         # self.assertEqual(result, expected_result)
+
+    # @patch("builtins.input", return_value="-4 3 2", autospec=True)
+    # def test_get_currency_denominations_inputs_5(self, mock_input):
+    #     result = get_currency_denomination_inputs(max_array_length=10 ** 3)
+    #     expected_result = "Denominations were invalid - they need to be positive integers separated by spaces."
+    #     self.assertEqual(result, expected_result)
 
     # Test of user input for target value V
     # Positive test case
