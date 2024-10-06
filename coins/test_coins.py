@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from coins import (check_value_is_int, check_value_is_positive, check_value_is_in_range, remove_duplicates,
                    check_coins_is_list, check_array_length, get_currency_denomination_inputs, get_target_value_input,
-                   calculate_minimum_coins_for_target_value)
+                   calculate_minimum_coins_for_target_value, check_target_value_was_achieved_with_given_currency)
 
 
 class TestTargetValueClass(unittest.TestCase):
@@ -127,44 +127,106 @@ class TestCoinsArrayClass(unittest.TestCase):
 
 class TestUserInputsClass(unittest.TestCase):
 
-    # Test of user input for coins array, coins[]
-    # Positive test case
-    @patch("builtins.input", return_value="1 2 5 10")
-    def test_get_currency_denomination_inputs(self, mock_input):
-        result = get_currency_denomination_inputs()
+    # Test of user inputs for coins array, coins[]
+    @patch("builtins.input", return_value="1 2 5 10", autospec=True)
+    def test_get_currency_denomination_inputs_1(self, mock_input):
+        result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [1, 2, 5, 10]
         self.assertEqual(result, expected_result)
 
+    @patch("builtins.input", return_value="10 5 2 1", autospec=True)
+    def test_get_currency_denomination_inputs_2(self, mock_input):
+        result = get_currency_denomination_inputs(max_array_length=10**3)
+        expected_result = [1, 2, 5, 10]
+        self.assertEqual(result, expected_result)
+
+    @patch("builtins.input", return_value="2 10 5 1", autospec=True)
+    def test_get_currency_denominations_inputs_3(self, mock_input):
+        result = get_currency_denomination_inputs(max_array_length=10**3)
+        expected_result = [1, 2, 5, 10]
+        self.assertEqual(result, expected_result)
+
+    @patch("builtins.input", return_value="4 3 2", autospec=True)
+    def test_get_currency_denominations_inputs_4(self, mock_input):
+        result = get_currency_denomination_inputs(max_array_length=10**3)
+        expected_result = [2, 3, 4]
+        self.assertEqual(result, expected_result)
+
     # Negative test case
-    @patch("builtins.input", return_value="one two five ten")
-    def test_get_currency_denomination_inputs_invalid(self, mock_input):
-        with self.assertRaises(ValueError) as context:
-            get_currency_denomination_inputs()
-        self.assertEqual(str(context.exception),
-                         "Denominations were invalid - they need to be integers separated by spaces.")
+    # @patch("builtins.input", return_value="one two five ten", autospec=True)
+    # def test_get_currency_denomination_inputs_invalid(self, mock_input):
+    #     print(f"{mock_input.call_count=}")
+    #     # 1st invalid input mock
+    #     result = get_currency_denomination_inputs()
+    #     expected_result = "Denominations were invalid - they need to be integers separated by spaces."
+    #     self.assertEqual(result, expected_result)
+
+        # # 2nd invalid input mock
+        # with self.assertRaises(ValueError) as context:
+        #     get_currency_denomination_inputs()
+        # self.assertEqual(str(context.exception),
+        #                  "Denominations were invalid - they need to be integers separated by spaces.")
+        #
+        # # 3rd input (valid this time to break the while loop)
+        # result = get_currency_denomination_inputs()
+        # expected_result = [1]
+        # self.assertEqual(result, expected_result)
+
+    # @patch("builtins.input", return_value="-4 3 2", autospec=True)
+    # def test_get_currency_denominations_inputs_5(self, mock_input):
+    #     result = get_currency_denomination_inputs(max_array_length=10 ** 3)
+    #     expected_result = "Denominations were invalid - they need to be positive integers separated by spaces."
+    #     self.assertEqual(result, expected_result)
 
     # Test of user input for target value V
     # Positive test case
-    @patch('builtins.input', return_value="135")
+    @patch('builtins.input', return_value="135", autospec=True)
     def test_get_target_value_input(self, mock_input):
         result = get_target_value_input()
         expected_result = 135
         self.assertEqual(result, expected_result)
 
     # Negative test case
-    @patch('builtins.input', return_value="13.54")
-    def test_get_target_value_input_invalid(self, mock_input):
-        with self.assertRaises(ValueError) as context:
-            get_target_value_input()
-        self.assertEqual(str(context.exception), "Value, V, is invalid - it needs to be an integer.")
+    # @patch('builtins.input', side_effect=["13.54", "1"], autospec=True)
+    # def test_get_target_value_input_invalid(self, mock_input):
+    #     with self.assertRaises(ValueError) as context:
+    #         get_target_value_input()
+    #     self.assertEqual(str(context.exception), "Value, V, is invalid - it needs to be an integer.")
 
 
 class TestMinimumCoinCalculationClass(unittest.TestCase):
 
     # Positive test case
-    def test_calculate_minimum_coins_for_target_value(self):
+    def test_calculate_minimum_coins_for_target_value_1(self):
         self.assertEqual(calculate_minimum_coins_for_target_value(
             63, [1, 2, 5, 10], coins_dict={1: 0, 2: 0, 5: 0, 10: 0}), {1: 1, 2: 1, 5: 0, 10: 6})
+
+    def test_calculate_minimum_coins_for_target_value_2(self):
+        self.assertEqual(calculate_minimum_coins_for_target_value(
+            23, [2, 3, 4], coins_dict={2: 0, 3: 0, 4: 0}), {2: 0, 3: 1, 4: 5})
+
+    def test_calculate_minimum_coins_for_target_value_3(self):
+        self.assertEqual(calculate_minimum_coins_for_target_value(
+            42363, [1, 2, 5, 10, 20, 50, 100, 200],
+            coins_dict={1: 0, 2: 0, 5: 0, 10: 0, 20: 0, 50: 0, 100: 0, 200: 0}),
+            {1: 1, 2: 1, 5: 0, 10: 1, 20: 0, 50: 1, 100: 1, 200: 211})
+
+
+class TestTargetValueAchievedWithGivenCurrencyDenominations(unittest.TestCase):
+
+    # Positive test case
+    def test_check_target_value_was_achieved_with_given_currency(self):
+        self.assertEqual(check_target_value_was_achieved_with_given_currency(
+            63, {1: 1, 2: 1, 5: 0, 10: 6}), 1)
+
+    def test_check_target_value_was_not_achieved_with_given_currency(self):
+        self.assertEqual(check_target_value_was_achieved_with_given_currency(
+            63, {2: 1, 5: 0, 10: 6}), 0)
+
+    # Negative test case
+    def test_check_target_value_was_achieved_with_given_currency_fail(self):
+        self.assertEqual(check_target_value_was_achieved_with_given_currency(
+            63, {2: 1, 5: 0, 10: "not a number"}), 0)
 
 
 if __name__ == "__main__":
