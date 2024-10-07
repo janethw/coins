@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from coins import (check_value_is_int, check_value_is_positive, check_value_is_in_range, remove_duplicates,
+from coins import (check_value_is_int, check_value_is_positive, check_value_is_in_range,
                    check_coins_is_list, check_array_length, get_currency_denomination_inputs, get_target_value_input,
                    calculate_minimum_coins_for_target_value, check_target_value_was_achieved_with_given_currency)
 
@@ -70,16 +70,9 @@ class TestCoinsArrayClass(unittest.TestCase):
         negative_test_cases_for_list = [{1, 2, 10, 50}, (1, 2, 10, 50), "1, 2, 10, 50", 40]
         for test_value in negative_test_cases_for_list:
             print(f"Current test: {test_value=}")
-            with self.assertRaises(ValueError) as context:
+            with self.assertRaises(TypeError) as context:
                 check_coins_is_list(test_value)
             self.assertEqual(str(context.exception), "Coin denominations must be in a list")
-
-    def test_remove_duplicates(self):
-        # Positive test case of output
-        self.assertEqual(remove_duplicates([2, 5, 10]), [2, 5, 10])
-        self.assertEqual(remove_duplicates([0, 1, 2, 2, 2, 5, 10, 100]), [0, 1, 2, 5, 10, 100])
-        self.assertEqual(remove_duplicates([1, 1, 1, 2, 5, 10, 50, 100, 200, 200, 200, 2 * 10 ** 2]),
-                         [1, 2, 5, 10, 50, 100, 200])
 
     def test_coin_value_is_positive(self, variable_name="coins array"):
         # Positive test case for coin in coins array
@@ -129,31 +122,31 @@ class TestUserInputsClass(unittest.TestCase):
 
     # Test of user inputs for coins array, coins[]
     @patch("builtins.input", return_value="1 2 5 10", autospec=True)
-    def test_get_currency_denomination_inputs_1(self, mock_input):
+    def test_get_currency_denomination_inputs_converts_to_list(self, mock_input):
         result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [1, 2, 5, 10]
         self.assertEqual(result, expected_result)
 
     @patch("builtins.input", return_value="10 5 2 1", autospec=True)
-    def test_get_currency_denomination_inputs_2(self, mock_input):
+    def test_get_currency_denomination_inputs_order_sorted_1(self, mock_input):
         result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [1, 2, 5, 10]
         self.assertEqual(result, expected_result)
 
     @patch("builtins.input", return_value="2 10 5 1", autospec=True)
-    def test_get_currency_denominations_inputs_3(self, mock_input):
+    def test_get_currency_denominations_inputs_order_sorted_2(self, mock_input):
         result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [1, 2, 5, 10]
         self.assertEqual(result, expected_result)
 
     @patch("builtins.input", return_value="4 3 2", autospec=True)
-    def test_get_currency_denominations_inputs_4(self, mock_input):
+    def test_get_currency_denominations_inputs_order_sorted_3(self, mock_input):
         result = get_currency_denomination_inputs(max_array_length=10**3)
         expected_result = [2, 3, 4]
         self.assertEqual(result, expected_result)
 
     @patch("builtins.input", return_value="4 3 2 2", autospec=True)
-    def test_get_currency_denominations_inputs_5(self, mock_input):
+    def test_get_currency_denominations_inputs_duplicates_removed(self, mock_input):
         result = get_currency_denomination_inputs(max_array_length=10 ** 3)
         expected_result = [2, 3, 4]
         self.assertEqual(result, expected_result)
@@ -212,6 +205,10 @@ class TestMinimumCoinCalculationClass(unittest.TestCase):
             23, [2, 3, 4], coins_dict={2: 0, 3: 0, 4: 0}), {2: 0, 3: 1, 4: 5})
 
     def test_calculate_minimum_coins_for_target_value_3(self):
+        self.assertEqual(calculate_minimum_coins_for_target_value(
+            6, [1, 3, 4], coins_dict={1: 0, 3: 0, 4: 0}), {1: 0, 3: 2, 4: 0})
+
+    def test_calculate_minimum_coins_for_target_value_4(self):
         self.assertEqual(calculate_minimum_coins_for_target_value(
             42363, [1, 2, 5, 10, 20, 50, 100, 200],
             coins_dict={1: 0, 2: 0, 5: 0, 10: 0, 20: 0, 50: 0, 100: 0, 200: 0}),

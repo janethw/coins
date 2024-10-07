@@ -15,7 +15,6 @@ def main():
     if not check_target_value_was_achieved_with_given_currency(valueV, minimum_coins_dict):
         print("-1\nThe target value cannot be achieved with the given currency denominations.")
     else:
-        # print(f"After min_coins_dict fn call, {minimum_coins_dict=}")
         print(f"\nThe minimum coins to achieve the target value {valueV} is: ")
         for k, v in minimum_coins_dict.items():
             if v != 0:
@@ -24,8 +23,9 @@ def main():
 
 
 def get_currency_denomination_inputs(max_array_length):
-    coins_array = []
+
     while True:
+        coins_array = []
         denominations = input("Enter denominations as integers separated by space: ")
         denominations = denominations.split(" ")
         try:
@@ -34,14 +34,12 @@ def get_currency_denomination_inputs(max_array_length):
                     coins_array.append(int(denomination))
                 else:
                     raise ValueError
-        except ValueError:
-            print("Denominations were invalid - they need to be positive integers separated by spaces.")
-            coins_array = []
-        else:
-            sorted_coins_array = sorted(coins_array)
+            sorted_coins_array = sorted(set(coins_array))
             check_coins_array_is_valid(sorted_coins_array, max_array_length)
             print(f"The currency denominations you have set are: {sorted_coins_array}")
             return sorted_coins_array
+        except ValueError:
+            print("Denominations were invalid - they need to be positive integers separated by spaces.")
 
 
 def get_target_value_input():
@@ -95,15 +93,8 @@ def check_coins_array_is_valid(coins, max_array_length):
     # Check coins array is a list
     try:
         check_coins_is_list(coins)
-    except ValueError as value_error:
-        print(f"Coin array is not valid: {value_error}")
-        return 0
-
-    # Remove any duplicates from coins array
-    try:
-        coins = remove_duplicates(coins)
-    except ValueError as value_error:
-        print(f"The coins array is not valid: {value_error}")
+    except TypeError as type_error:
+        print(f"Coin array is not valid: {type_error}")
         return 0
 
     # Check coins array length within array length limits
@@ -151,17 +142,8 @@ def check_value_is_positive(input_value, variable_name):
 # Validation of coins[] - check type is list
 def check_coins_is_list(coins):
     if not isinstance(coins, list):
-        raise ValueError("Coin denominations must be in a list")
+        raise TypeError("Coin denominations must be in a list")
     return coins
-
-
-# Validation of coins[] - removal of duplicates
-def remove_duplicates(coin_array):
-    unique_coin_array = []
-    for coin in coin_array:
-        if coin not in unique_coin_array:
-            unique_coin_array.append(coin)
-    return unique_coin_array
 
 
 # Validation of coins[] - check of array length
