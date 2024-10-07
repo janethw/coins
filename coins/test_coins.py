@@ -152,6 +152,12 @@ class TestUserInputsClass(unittest.TestCase):
         expected_result = [2, 3, 4]
         self.assertEqual(result, expected_result)
 
+    @patch("builtins.input", return_value="4 3 2 2", autospec=True)
+    def test_get_currency_denominations_inputs_5(self, mock_input):
+        result = get_currency_denomination_inputs(max_array_length=10 ** 3)
+        expected_result = [2, 3, 4]
+        self.assertEqual(result, expected_result)
+
     # Negative test case
     # @patch("builtins.input", return_value="one two five ten", autospec=True)
     # def test_get_currency_denomination_inputs_invalid(self, mock_input):
@@ -191,7 +197,7 @@ class TestUserInputsClass(unittest.TestCase):
     # def test_get_target_value_input_invalid(self, mock_input):
     #     with self.assertRaises(ValueError) as context:
     #         get_target_value_input()
-    #     self.assertEqual(str(context.exception), "Value, V, is invalid - it needs to be an integer.")
+    #     self.assertEqual(str(context.exception), "Value, V, is invalid - it needs to be an integer."
 
 
 class TestMinimumCoinCalculationClass(unittest.TestCase):
