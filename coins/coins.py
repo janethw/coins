@@ -35,7 +35,7 @@ def get_currency_denomination_inputs(max_array_length):
                 else:
                     raise ValueError
             sorted_coins_array = sorted(set(coins_array))
-            check_coins_array_is_valid(sorted_coins_array, max_array_length)
+            # check_coins_array_is_valid(sorted_coins_array, max_array_length)
             print(f"The currency denominations you have set are: {sorted_coins_array}")
             return sorted_coins_array
         except ValueError:
@@ -58,6 +58,7 @@ def get_target_value_input():
 
 def calculate_minimum_coins_for_target_value(valueV, coins, coins_dict):
     i = len(coins) - 1
+
     while i >= 0:
         # print(f"{coins=}")
         whole_multiple, remainder = divmod(valueV, coins[i])
